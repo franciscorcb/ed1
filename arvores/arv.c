@@ -107,6 +107,7 @@ void imprimir(Tnode *t){
     }
 
 }
+
 void imprimirSimetrico(Tnode *t){
     if(t!=NULL){
         imprimirSimetrico(t->left);
