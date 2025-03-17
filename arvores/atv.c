@@ -197,6 +197,66 @@ Tnode *removerNosDeGrau1(Tnode *t){
     return NULL;
 }
 
+int isAbp(Tnode *t) {
+    if (t != NULL) {
+        if (t->left != NULL && t->left->data > t->data) {
+            return FALSE;
+        }
+        if (t->right != NULL && t->right->data < t->data) {
+            return FALSE;
+        }
+        return isabp(t->left) && isAbp(t->right);   
+    }
+    else{
+        return TRUE;
+    }
+}
+
+int retornaElementoEsqNivelK(Tnode *t, int h){
+    if(t!=NULL && h>=0){
+        if(h==0){
+            return t->data;
+        }
+        return retornaElementoEsqNivelK(t->left,h-1);
+    }
+    return -1;
+}
+
+int retornaElementoDirNivelK(Tnode *t, int h){
+    if(t!=NULL && h>=0){
+        if(h==0){
+            return t->data;
+        }
+        return retornaElementoDirNivelK(t->right,h-1);
+    }
+    return -1;
+}
+
+int visitByLevel(Tnode *t, void(*visit)(void *,void*), int level,int lv){
+    int h;
+    Tnode *stat;
+    if(t!=NULL){
+        h = abAltura(h);
+        visitByLevel(t,visit,level,lv);
+        while(lv<h){
+            lv++;
+            stat = visitByLevel(t,visit,level,lv);
+        }
+        return stat;
+    }
+    return FALSE;
+}
+
+int visitByLevelR(Tnode *t, void(*visit)(void*,void*), int level, int lv){
+    if(t!=NULL){
+        if(level = lv){
+            visit(t->data);
+        }
+        visitByLevelR(t->left,visit,level+1,lv);
+        visitByLevelR(t->right,visit,level+1,lv)
+    }
+}
+
 int main(){
     Tnode *arv = NULL;
     Tnode *arv2 = NULL;
