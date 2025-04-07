@@ -459,6 +459,78 @@ int interseccaoDeListas(SlList *l1,SlList *l2){
     return FALSE;
 }
 
+int retornaTamanho(SlList *l1){
+    int tam=0;
+    Slnode *spec;
+    if(l1!=NULL){
+        spec=l1->first;
+        while(spec !=NULL){
+            tam++;
+            spec = spec->next;
+        }
+    }
+    return tam;
+}
+
+int inSub(SlList *l1,SlList *l2,int i1,int i2, int len){
+    int tamL1 = retornaTamanho(l1);
+    int tamL2= retornaTamanho(l2);
+
+    Slnode *spec1,*spec2,*prevL1,*prevL2;
+    int tam1,tam2;
+
+    if(l1!=NULL && l2!=NULL){
+        if(i1>(tamL1+1) || (i2 + len -1) > tamL2 || i1<1 || i2<1){
+            return FALSE;
+        }
+        else{
+            spec1 = l1->first;
+            spec2 = l2->first;
+            prevL1 = NULL;
+            prevL2 = NULL;
+
+            while (tam1 < i1-1 && spec1 != NULL) {
+                prevL1 = spec1;
+                spec1 = spec1->next;
+                tam1++;
+            }
+
+            while (tam2 < i2-1 && spec2 != NULL) {
+                prevL2 = spec2;
+                spec2 = spec2->next;
+                tam2++;
+            }
+
+            if(spec2!=NULL){
+                for(int i=0;i<len;i++){
+                    Slnode *newnode = spec2;
+                    spec2 = spec2->next;
+                    if(prevL1==NULL){
+                        newnode->next = l1->first;
+                        l1->first = newnode;
+                    }
+                    else{
+                        newnode->next = prevL1->next;
+                        prevL1->next = newnode;
+                    }
+
+                    if(prevL2==NULL){
+                        l2->first = spec2;
+                    }
+                    else{
+                        prevL2->next = spec2;
+                    }
+                    prevL1= newnode;
+                }
+            }
+            else{
+                return FALSE;
+            }
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
 
 int main() {
     SlList lista1;
@@ -468,15 +540,17 @@ int main() {
     lista2.first = NULL;
 
 
-    int valores1[] = {11,9,7,5,3,1};
-    int valores2[] = {12,10,8,6,4,2};
+    int valores1[] = {4,3,2,1};
+    int valores2[] = {8,7,6,5};
     int i;
+    int tam1 = sizeof(valores1)/sizeof(int);
+    int tam2 = sizeof(valores2)/sizeof(int);
     
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < tam1; i++) {
         slInsert(&lista1, &valores1[i]);
     }
 
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < tam2; i++) {
         slInsert(&lista2, &valores2[i]);
     }
     
@@ -485,9 +559,12 @@ int main() {
 
     printf("2 lista:\n");
     imprimir(&lista2);
-    interseccaoDeListas(&lista1,&lista2);
-    printf("Intersecao da lista:\n");
+
+    inSub(&lista1,&lista2,4,1,3);
+
+    printf("Nova Lista\n");
     imprimir(&lista1);
+    imprimir(&lista2);
     freeList(&lista1);
     freeList(&lista2);
     return 0;
